@@ -8,7 +8,7 @@ psf=kSimPSF({'lambdaEx',473;'lambdaEm',510;'na',NA;'ri',1.518;'sX',n;'sY',n;'sZ'
 kpsf=ft(psf);
 %% as an object I want a hollow sphere
 % I define it in k-space
-kobj=sinc(rr(n,n,n)./24).*sinc(rr(n,n,n)./2);
+kobj=sinc(rr(n,n,n)./2).*sinc(rr(n,n,n)./0.7);
 
 %% this is the sphere
 obj=rr(n,n,n).*abs(ift(kobj));
@@ -31,6 +31,12 @@ kgrat=ft(grat);
 %% coherent illumination
 % makes an image of the grating
 imgrat=abs(ift(kgrat.*kpsf))^2;
+
+%% shift the object a little bit in z
+kobj=ft(obj);
+dz=1.6;
+kobj=kobj.*exp(-i*2*pi*zz(kobj,'freq')*dz);
+obj=ift(kobj);
 
 %% excited fluorophores
 fluo=obj.*imgrat;
@@ -60,3 +66,6 @@ ex=squeeze(s(:,:,:,0));
 ey=squeeze(s(:,:,:,1));
 ez=squeeze(s(:,:,:,2));
 intens=sqrt(ex .* conj(ex) + ey .* conj(ey) + ez .* conj(ez));
+%% DampEdge 0.08 2 introduces a column and a row of zeros - not good
+iu=real(squeeze(flimg(:,:,n/2)));
+in=real(squeeze(strucflimg(:,:,n/2)));
