@@ -50,14 +50,16 @@ set(gcf, 'PaperPosition', [0, 0, 7, 7]);
 image(double(imgrat_scaled(:,64:191)),'Parent',axes1,'CDataMapping','scaled');
 colormap('copper');
 
-print(figure1,'-depsc2','/home/martin/0807/grating_xz.eps');
+%print(figure1,'-depsc2','/home/martin/0807/grating_xz.eps');
 %% for imaging the fluorescence light
 psf=kSimPSF({'lambdaEx',473;'lambdaEm',520;'na',1.4;'ri',1.518;...
         'sX',n;'sY',n;'sZ',sz*n;...
         'scaleX',nmperpixel;'scaleY',nmperpixel;'scaleZ',znmperpixel});
 %% ft thereof
 kpsf=ft(psf);
-
+%% object plane
+%obj=newim(imgrat);
+%obj(13:114,13:93,(sz*n)/2)=4;
 %% as an object I want a hollow sphere
 % I define it in k-space
 kobj=sinc(rr(kpsf)./2).*sinc(rr(kpsf)./0.7);
@@ -107,22 +109,32 @@ insb(sbx:sbx+sbw,sby:sby+sbh)=255;
 iusb=iu*255/max(iu);
 iusb(sbx:sbx+sbw,sby:sby+sbh)=255;
 %writeim(iusb,'/home/martin/0807/iu.eps','EPS',0);
+%% project otf along z
+skpsf=squeeze(sum(kpsf,[],3));
+corr=gaussf((rr(skpsf,'freq')<.42),3)./skpsf; % use this to correct for otf
+
 %% start of reconstruction
 kin=ft(in);
 kiu=ft(iu);
 % scale kin and kiu
 kappa=sum(abs(kin)./abs(kiu).*(rr(in)<5))./sum(rr(in)<5)
+%% correct for the otf
+ckin=corr.*kin;
+ckiu=corr.*kiu;
+%% correlate to find grating positions
+ackin=angle(ckin-kappa.*ckiu);
+ackiu=angle(ckiu).*(rr(ckin,'freq')<.16 | abs(xx(ckin,'freq'))<.06);
+abs(ift(ft(ackin).*conj(ft(ackiu))))
 %%
 ic=in-kappa.*iu;
 kic=ft(ic)
 abs(kic(64,64))
-%% project otf along z
-skpsf=squeeze(sum(kpsf,[],3));
-corr=gaussf((rr(skpsf,'freq')<.42),3)./skpsf; % use this to correct for otf
 %% find maximum on the right of the fouriertransform
 startx=75;
+kgrat2d=ft(grat2d);
 dic=DampEdge(ic,0.2,2,1,2);
 kdic=ft(dic).*corr;
+ift(kdic)./grat2d
 [m,p]=max(abs(kdic(startx:end,:)));
 pos=[p(1)+startx,p(2)];
 % determine center of mass of the 3x3 region around the maximum

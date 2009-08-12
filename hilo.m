@@ -11,12 +11,14 @@ kpsf=ft(psf);
 kobj=sinc(rr(n,n,n)./2).*sinc(rr(n,n,n)./0.7);
 
 %% this is the sphere
-obj=rr(n,n,n).*abs(ift(kobj));
-maximum=max(obj);
+%obj=rr(n,n,n).*abs(ift(kobj));
+%maximum=max(obj);
+obj=newim(imgrat);
 % in-focus rectangle in right top
-obj(83:114,23:43,n/2)=4*maximum;
+%obj(83:114,23:43,n/2)=4*maximum;
+obj(13:114,13:93,n/2)=4;
 % in-focus line on the left
-obj(21:21,40:90,n/2)=12*maximum;
+%obj(21:21,40:90,n/2)=12*maximum;
 
 %% grating of period P
 % one pixel is 100nm so the period is 400nm
