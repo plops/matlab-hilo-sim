@@ -23,3 +23,4 @@ global psf;
 global kpsf;
 global obj;
 global kobj;
+global imgrat;
