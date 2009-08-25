@@ -4,17 +4,17 @@
 function in=dbl2(g_phi_grad)
     run './dbl_g.m';
     g=1+.5*cos(2*pi/Lambda*(cos(theta)*rx*res1+sin(theta)*ry*res2)+g_phi_grad*pi/180);
-    
+    g=(mod(xx(rx)+g_phi_grad*8/360,8))>4
     % update illumination
     grat(:,:,floor(s3/2))=g(:,:);
-    %kgrat=ft(grat);
-    %imgratx=ift(kgrat.*kasf0);
-    %imgraty=ift(kgrat.*kasf1);
-    %imgratz=ift(kgrat.*kasf2);
-    %imgrat=abs(imgratx).^2+abs(imgraty).^2+abs(imgratz).^2;
+    kgrat=ft(grat);
+    imgratx=ift(kgrat.*kasf0);
+    imgraty=ift(kgrat.*kasf1);
+    imgratz=ift(kgrat.*kasf2);
+    imgrat=abs(imgratx).^2+abs(imgraty).^2+abs(imgratz).^2;
     %% excited fluorophores
-    %fluo=obj.*imgrat;
-    fluo=obj.*grat;
+    fluo=obj.*imgrat;
+    %fluo=obj.*grat;
     % the structured illuminated stuff in image space
     strucflimg=ift(ft(fluo).*kpsf);
     % the result
