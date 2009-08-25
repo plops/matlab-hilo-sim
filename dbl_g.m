@@ -5,7 +5,7 @@ res1=100; % nm per pixel
 res2=100;
 res3=300;
 
-g_phi=27*pi/180; % radians, phase shift of grating
+g_phi=3; % pixel, phase shift of grating
 s1=128;
 s2=128;
 s3=128;

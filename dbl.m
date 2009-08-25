@@ -1,9 +1,7 @@
 run './dbl_g.m';
-g=1+.5*cos(2*pi/Lambda*(cos(theta)*rx*res1+sin(theta)*ry*res2)+g_phi);
 
-%% fill a 3d grating
+%% space for the 3d grating
 grat=newim(s1,s2,s3);
-grat(:,:,floor(s3/2))=g(:,:);
 kgrat=ft(grat);
 
 %% now simulate the coherent imaging into the sample
@@ -44,10 +42,10 @@ obj(83:end,23:43,floor(s3/2))=4*maximum;
 obj(21:21,40:end,floor(s3/2))=12*maximum;
 
 %% shift the object a little bit in z
-kobj=ft(obj);
-dz=0; % shift in pixels -> 1 equals 100nm
-kobj=kobj.*exp(-i*2*pi*zz(kobj,'freq')*dz);
-obj=ift(kobj);
+%kobj=ft(obj);
+%dz=0; % shift in pixels -> 1 equals 100nm
+%kobj=kobj.*exp(-i*2*pi*zz(kobj,'freq')*dz);
+%obj=ift(kobj);
 
 %% excited fluorophores
 fluo=obj.*imgrat;
@@ -59,5 +57,5 @@ strucflimg=ift(ft(fluo).*kpsf);
 flimg=ift(ft(obj).*kpsf);
 
 % extract focal planes
-iu=real(squeeze(flimg(:,:,floor(s3/2))));
+%iu=real(squeeze(flimg(:,:,floor(s3/2))));
 in=real(squeeze(strucflimg(:,:,floor(s3/2))));
