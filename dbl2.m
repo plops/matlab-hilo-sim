@@ -1,15 +1,19 @@
 % when dbl.m has been run once use this function to generate images with
 % different illumination this function relies on results that already have
 % been computed by dbl.m
-function in=dbl2(illum)
+function in=dbl2(illum,coherent)
     run './dbl_g.m';
     % update illumination
     grat(:,:,floor(s3/2))=illum(:,:);
     kgrat=ft(grat);
-    imgratx=ift(kgrat.*kasf0);
-    imgraty=ift(kgrat.*kasf1);
-    imgratz=ift(kgrat.*kasf2);
-    imgrat=abs(imgratx).^2+abs(imgraty).^2+abs(imgratz).^2;
+    if coherent
+        imgratx=ift(kgrat.*kasf0);
+        imgraty=ift(kgrat.*kasf1);
+        imgratz=ift(kgrat.*kasf2);
+        imgrat=abs(imgratx).^2+abs(imgraty).^2+abs(imgratz).^2;
+    else % non-coherent LED illumination
+        imgrat=ift(kgrat.*kpsfled);
+    end
     %% excited fluorophores
     fluo=obj.*imgrat;
     %fluo=obj.*grat;

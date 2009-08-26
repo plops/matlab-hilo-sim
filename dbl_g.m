@@ -21,6 +21,8 @@ global kasf1;
 global kasf2;
 global psf;
 global kpsf;
+global psfled;
+global kpsfled;
 global obj;
 global kobj;
 global imgrat;
