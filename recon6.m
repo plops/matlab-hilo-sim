@@ -13,7 +13,7 @@ ins=dbl2(gratings,0);
 wf=1;
 iu=dbl2(wf,0);
 %% illuminate only in-focus parts of the object
-slice_perfect=squeeze(obj(:,:,floor(s3/2))>.1);
+slice_perfect=gaussf(squeeze(obj(:,:,floor(s3/2))>.1));
 iu2=dbl2(slice_perfect,0);
 %% illuminate in-focus parts of the object with a grating
 in2=dbl2(slice_perfect & grating,0);
