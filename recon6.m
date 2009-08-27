@@ -20,18 +20,41 @@ iu2=dbl2(slice_perfect,0);
 in2=dbl2(slice_perfect & grating,0);
 %% illuminate in-focus parts of the object with the shifted grating
 ins2=dbl2(slice_perfect & gratings,0);
+
+%% for the clem image remove in-focus rectangle in right top
+rectangle=newim(slice_perfect)>1;
+rectangle(83:end,23:43)=1;
+slice_clem=slice_perfect & ~ bdilation(rectangle);
+iu3=dbl2(slice_clem,0);
 %%
-% in-focus rectangle in right top
-obj(83:end,23:43,floor(s3/2))=4*maximum;
+in3=dbl2(slice_clem & grating,0);
+
+%% only illuminate the bright rectangle
+not_slice_clem=bdilation(rectangle);
+iu4=dbl2(not_slice_clem,0);
+%%
+in4=dbl2(not_slice_clem & grating,0);
+
 %% project otf along z
 skpsf=squeeze(sum(kpsf,[],3));
-corr=gaussf((rr(skpsf,'freq')<.42),3)./skpsf; % use this to correct for otf
+correct=gaussf((rr(skpsf,'freq')<.42),3)./skpsf; % use this to correct for otf
 %%
 ft(2.06612*in2-iu2).*corr
+%%
+ft(2*in3-iu3).*corr
+%% only in-focus
+ihilo2=hilo_combine(2*in2-iu2,iu2)
+%% leave out rectangle
+ihilo3=hilo_combine(2*in3-iu3,iu3)
+%% only rectangle
+ihilo4=hilo_combine(2*in4-iu4,iu4)
+%%
+ihilo3+ihilo4 %-ihilo2
 %% shift right order into the center
 %diff=ins2-in2; add=ins2+in2;
 %diff=ins-iu; add=iu;
-diff=2.06612*in2-iu2; add=iu2;
+%diff=2.06612*in2-iu2; add=iu2;
+diff=2.*in3-iu3; add=iu3;
 %diff=2*in-iu; add=iu;
 o=ft(ift((ft(diff).*corr)).*exp(-i*2*pi*(xx(in,'freq').*32)));
 %%

@@ -26,3 +26,6 @@ global kpsfled;
 global obj;
 global kobj;
 global imgrat;
+global correct;
+global ilp;
+global ihp;
